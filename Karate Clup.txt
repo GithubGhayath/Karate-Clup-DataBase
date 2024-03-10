@@ -1,0 +1,105 @@
+
+
+
+create table Persons
+(
+	PersonID int primary key identity(1,1),
+	FirstName nvarchar(100) not null,
+	MidName nvarchar(100) not null,
+	LastName nvarChar(100) not null,
+	Address nvarchar(max) not null
+)
+
+
+
+create table Phones
+(
+	ID int primary key identity(1,1),
+	Phone nvarchar(50) not null,
+	Person_ID int not null,
+	constraint FK_Person foreign key(Person_ID) references Persons(PersonID)
+)
+
+create table BeltsRank
+(
+	BeltID int primary key identity(1,1),
+	Belt nvarchar(1000) not null
+)
+
+
+
+
+
+create TAble Members
+(
+	MemberID int primary key identity (1,1),
+	EmergencyContact nvarchar(50) not null,
+	PersonID int not null,
+	BeltID int null,
+	constraint FK_PersonID foreign key (PersonID) references Persons(PersonID),
+	constraint FK_BletID foreign key (BeltID) references BeltsRank(BeltID)
+)
+
+create table Instructors
+(
+	InstructorID int primary key,
+	Qualifictions nvarchar(max) not null,
+	PersonID int not null,
+	constraint FK_Personnn foreign key(PersonID) references Persons(PersonID)
+)
+
+create table MembersManagment
+(
+	RecordMemberID int primary key identity(1,1),
+	Active char(1) null,
+	Inactive char(1) null,
+	MembershipStartDate date not null,
+	MembershipEndDate date not null,
+	MemberID int not null,
+	constraint FK_MemberID foreign key (MemberID) references Members(MemberID),
+	constraint CHK_checkActiveInactive check((Active ='F' or Active='T' or Active is null) 
+	or (Inactive ='F' or Inactive='T' or Inactive is null))
+)
+
+create table Payment
+(
+	PaymentID int primary key identity(1,1),
+	PaymentStatue nvarchar(500) not null,
+	PaidAmount money not null,
+	PaidDate date not null
+)
+
+
+create table Enrollments
+(
+	EnrollmentID int primary key identity(1,1),
+	MemberID int not null,
+	InstructorID int not null,
+	PaymentID int not null,
+	constraint FK_MemberIDD foreign key (MemberID)  references Members(MemberID),
+	constraint FK_InstructorID foreign key (InstructorID)  references Instructors(InstructorID),
+	constraint FK_PaymentID foreign key (PaymentID)  references Payment(PaymentID)
+)
+
+create table Testings
+(
+	TestID int primary key identity(1,1),
+	TestDate date not null,
+	BeltID int not null,
+	EnrollmentMemberID int not null,
+	PaymentID int not null,
+	constraint FK_BeltID foreign key(BeltID) references BeltsRank(BeltID),
+	constraint FK_EnrollmentMemberID foreign key(EnrollmentMemberID) references Enrollments(EnrollmentID),
+	constraint FK_PaymentIDD foreign key(PaymentID) references Payment(PaymentID)
+
+)
+
+
+create Table Conducts
+(
+	ID int primary key identity(1,1),
+	TestID int not null,
+	InstructorID int not null,
+	constraint FK_TestID foreign key(TestID) references Testings(TestID),
+	constraint FK_InstructorIDD foreign key(InstructorID) references Instructors(InstructorID)
+)
